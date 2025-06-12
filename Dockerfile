@@ -4,4 +4,4 @@ COPY bootstrap.py /app/src/about/management/commands/bootstrap.py
 COPY docker-entrypoint.sh /app/
 
 
-ENTRYPOINT ["/bin/bash","-c","/app/docker-entrypoint.sh"]
+ENTRYPOINT ["/bin/bash", "/app/docker-entrypoint.sh"]
