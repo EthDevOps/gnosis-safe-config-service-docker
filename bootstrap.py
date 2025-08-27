@@ -19,17 +19,19 @@ class Command(BaseCommand):
     help = "Bootstrap configuration data"
 
     def handle(self, *args, **options):
-        Chain.objects.all().delete()
-        GasPrice.objects.all().delete()
-        Provider.objects.all().delete()
-        SafeApp.objects.all().delete()
+        # Check if database is already populated
+        if (Chain.objects.exists() or GasPrice.objects.exists() or 
+            Provider.objects.exists() or SafeApp.objects.exists()):
+            self.stdout.write(
+                self.style.WARNING(
+                    'Database is already populated. Skipping bootstrap to preserve existing data.'
+                )
+            )
+            return
 
         self._bootstrap_features()
-
-        if Chain.objects.count() == 0:
-            self._bootstrap_chain()
-        if SafeApp.objects.count() == 0:
-            self._bootstrap_safe_apps()
+        self._bootstrap_chain()
+        self._bootstrap_safe_apps()
 
     def _bootstrap_features(self):
         self._feature_contract_interaction, _ = Feature.objects.get_or_create(key="CONTRACT_INTERACTION")
